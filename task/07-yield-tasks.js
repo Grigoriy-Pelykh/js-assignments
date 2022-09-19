@@ -33,7 +33,23 @@
  *
  */
 function* get99BottlesOfBeer() {
-    throw new Error('Not implemented');
+    try {
+        let count = 99;
+        while (count >= 3) {
+            yield count + ' bottles of beer on the wall, ' + count + ' bottles of beer.';
+            yield 'Take one down and pass it around, ' + --count + ' bottles of beer on the wall.';
+        }
+        if (count = 2) {
+            yield  count + ' bottles of beer on the wall, ' + count + ' bottles of beer.';
+            yield  'Take one down and pass it around, ' + --count + ' bottle of beer on the wall.';
+        }
+        yield '1 bottle of beer on the wall, 1 bottle of beer.';
+        yield 'Take one down and pass it around, no more bottles of beer on the wall.';
+        yield  'No more bottles of beer on the wall, no more bottles of beer.';
+        yield 'Go to the store and buy some more, 99 bottles of beer on the wall.';
+    } catch (err) {
+        console.error(err) // в консоль попадает сообщение об ошибке и стек ошибки
+    }
 }
 
 
@@ -47,7 +63,23 @@ function* get99BottlesOfBeer() {
  *
  */
 function* getFibonacciSequence() {
-    throw new Error('Not implemented');
+    try {
+        yield 0;
+        yield 1;
+    
+        let last = 0;
+        let current = 1;
+        let new_val = 1;
+    
+        while (true){
+            yield new_val;
+            last = current;
+            current = new_val;
+            new_val = last + current;
+        }
+    } catch (err) {
+        console.error(err) // в консоль попадает сообщение об ошибке и стек ошибки
+    }
 }
 
 
@@ -82,7 +114,22 @@ function* getFibonacciSequence() {
  *
  */
 function* depthTraversalTree(root) {
-    throw new Error('Not implemented');
+    try {
+        const stack = [];
+        stack.push(root); 
+        while (stack.length) {
+            const item = stack.pop();
+            yield item;
+    
+            if (item.children) {
+                item.children.reverse().forEach((child) => {
+                    stack.push(child);
+                });
+            }
+        }
+    } catch (err) {
+        console.error(err) // в консоль попадает сообщение об ошибке и стек ошибки
+    }
 }
 
 
@@ -108,7 +155,19 @@ function* depthTraversalTree(root) {
  *
  */
 function* breadthTraversalTree(root) {
-    throw new Error('Not implemented');
+    try {
+        let nodes = [root];
+    for (let i = 0; i < nodes.length; i++) {
+        yield nodes[i];
+        if ('children' in nodes[i]) {
+            for (let j = 0; j < nodes[i].children.length; j++) {
+                nodes.push(nodes[i].children[j]);
+            }
+        }
+    }
+    } catch (err) {
+        console.error(err) 
+    }
 }
 
 
@@ -126,7 +185,25 @@ function* breadthTraversalTree(root) {
  *   [ 1, 3, 5, ... ], [ -1 ] => [ -1, 1, 3, 5, ...]
  */
 function* mergeSortedSequences(source1, source2) {
-    throw new Error('Not implemented');
+    try {
+        const first = source1();
+        const second = source2(); 
+        while (true) {
+            let a = first.next().value;
+            let b = second.next().value;
+    
+            if (a == undefined)
+                yield b;
+            else if (b == undefined)
+                yield a;
+            else {
+                yield Math.min(a, b);
+                yield Math.max(a, b);
+            }
+        }
+    } catch (err) {
+        console.error(err) // в консоль попадает сообщение об ошибке и стек ошибки
+    }
 }
 
 

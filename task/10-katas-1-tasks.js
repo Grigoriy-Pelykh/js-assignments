@@ -17,8 +17,35 @@
  *  ]
  */
 function createCompassPoints() {
-    throw new Error('Not implemented');
-    var sides = ['N','E','S','W'];  // use array of cardinal directions only!
+    function* directCoors(from, to, dir) {
+        let result = [`${from}b${to}`, `${from}${from}${to}`, `${from}${to}b${from}`, `${from}${to}`, `${from}${to}b${to}`, `${to}${from}${to}`, `${to}b${from}`];
+        if (dir == "f")
+            result.reverse();
+
+        for (let i of result) {
+            yield i;
+        }
+    }
+    let result = [],
+        azimuth = 0,
+        items = [
+            {dir: "N", func: directCoors("N", "E", "d")},
+            {dir: "E", func: directCoors("S", "E", "f")},
+            {dir: "S", func: directCoors("S", "W", "d")},
+            {dir: "W", func: directCoors("N", "W", "f")}
+        ];
+
+    items.forEach(item => {
+        result.push({abbreviation: item.dir, azimuth: azimuth});
+        azimuth += 11.25;
+
+        for (let i = 0; i < 7; i++) {
+            result.push({abbreviation: item.func.next().value, azimuth: azimuth});
+            azimuth += 11.25;
+        }
+    });
+
+    return result;
 }
 
 
@@ -56,7 +83,30 @@ function createCompassPoints() {
  *   'nothing to do' => 'nothing to do'
  */
 function* expandBraces(str) {
-    throw new Error('Not implemented');
+    try {
+        const queue = [],
+        regex = new RegExp("\{([0-9a-zA-Z\.,]+)\}", 'i'),
+        itemSet = new Set;
+    queue.push(str);
+
+    while (queue.length) {
+        let item = queue.shift();
+        let matches = item.match(regex);
+
+        if (matches != null) {
+            let array = matches[1].split(',');
+
+            array.forEach(curr => {
+                queue.push(item.replace(matches[0], curr));
+            });
+        } else if (!itemSet.has(item)) {
+            itemSet.add(item);
+            yield item;
+        }
+    }
+    } catch (err) {
+        console.error(err) 
+    }
 }
 
 
@@ -88,7 +138,63 @@ function* expandBraces(str) {
  *
  */
 function getZigZagMatrix(n) {
-    throw new Error('Not implemented');
+
+        function* nextStepGenerator(n) {
+            function swap(dir) {
+                return dir == 1 ? 0 : 1;
+            }
+    
+            let tmp = n * n, i = 0, j = 0, dir = 0;
+    
+            while (tmp--) {
+                yield {x: i, y: j};
+    
+                // dir = 0  --  UP,  dir = 1  --  DOWN
+                if (dir == 0) {
+                    if (j == n - 1) {
+                        i++;
+                        dir = swap(dir);
+                        continue;
+                    }
+    
+                    if (i == 0) {
+                        j++;
+                        dir = swap(dir);
+                        continue;
+                    }
+    
+                    i--;
+                    j++;
+                } else {
+                    if (i == n - 1) {
+                        j++;
+                        dir = swap(dir);
+                        continue;
+                    }
+    
+                    if (j == 0) {
+                        i++;
+                        dir = swap(dir);
+                        continue;
+                    }
+    
+                    i++;
+                    j--;
+                }
+            }
+        }
+    
+        let result = Array.from({length: n}, () => null),
+            gen = nextStepGenerator(n);
+    
+        result = result.map(() => Array.from({length: n}, () => 0));
+    
+        for (let i = 0; i < n * n; i++) {
+            let stage = gen.next().value;
+    
+            result[stage["x"]][stage["y"]] = i;
+        }
+        return result;
 }
 
 
@@ -113,7 +219,11 @@ function getZigZagMatrix(n) {
  *
  */
 function canDominoesMakeRow(dominoes) {
-    throw new Error('Not implemented');
+    try {
+        return dominoes.map(x => x[0] + x[1]).reduce((prev, cur) => prev + cur) %2 != 0;
+    } catch (err) {
+        console.error(err) 
+    }
 }
 
 
@@ -137,7 +247,20 @@ function canDominoesMakeRow(dominoes) {
  * [ 1, 2, 4, 5]          => '1,2,4,5'
  */
 function extractRanges(nums) {
-    throw new Error('Not implemented');
+    try {
+        for(var i = 0; i < nums.length; i++){
+            var j = i;
+            while(nums[j] - nums[j + 1] == -1) {
+                j++;
+            }
+            if(j != i && j - i > 1) {
+                nums.splice(i, j - i + 1, nums[i] + '-' + nums[j]);
+            }
+        }
+        return nums.join();
+    } catch (err) {
+        console.error(err) 
+    }
 }
 
 module.exports = {
